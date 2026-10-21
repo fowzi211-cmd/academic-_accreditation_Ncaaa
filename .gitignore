@@ -1,0 +1,52 @@
+# Secrets and local configuration (at any depth)
+.env
+.env.*
+!.env.example
+config.local.php
+database.local.php
+database-admin.php
+quality_system_config/
+*.pem
+*.key
+*.pfx
+*.p12
+auth.json
+
+# Runtime data, dependencies, and caches
+/vendor/
+/node_modules/
+uploads/
+storage/
+quality_system_storage/
+backups/
+backup/
+quality_system_v*_working/
+temp_exports/
+tmp/
+.phpunit.cache/
+*.log
+*.sqlite
+*.sqlite3
+*.db
+
+# Database dumps and backup/archive files
+*.sql
+*.sql.gz
+*.dump
+*.bak
+*.old
+*.orig
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+*.tgz
+
+# Editor and operating system files
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store
+*~

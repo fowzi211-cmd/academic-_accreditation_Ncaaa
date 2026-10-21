@@ -1,0 +1,13 @@
+<?php
+declare(strict_types=1);
+namespace QualitySystem\Tests;
+use PDO;use PHPUnit\Framework\Attributes\Group;use PHPUnit\Framework\TestCase;use QualitySystem\Repositories\ProgramSpecificationRepository;use QualitySystem\Security\PermissionMatrix;
+final class ProgramSpecificationAuthorizationTest extends TestCase
+{
+    private PDO $pdo;private int $user;private array $programs=[];
+    protected function setUp():void{$c=require'C:\quality_system_config\database.php';$this->pdo=new PDO("mysql:host={$c['host']};port={$c['port']};dbname={$c['name']};charset=utf8mb4",$c['user'],$c['password'],[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);$suffix=bin2hex(random_bytes(5));$s=$this->pdo->prepare("INSERT INTO users(full_name,email,password_hash,role,status) VALUES(?,?,?,?, 'Active')");$s->execute(['Program Scope User',"program-scope-$suffix@invalid.test",password_hash($suffix,PASSWORD_DEFAULT),'Program Leader']);$this->user=(int)$this->pdo->lastInsertId();$insert=$this->pdo->prepare('INSERT INTO program_specifications(specification_title,program_name,approval_status,status) VALUES(?,?,?,?)');foreach(['Granted','Foreign'] as $name){$insert->execute(["$name $suffix","$name $suffix",'Draft','Draft']);$this->programs[]=(int)$this->pdo->lastInsertId();}$this->pdo->prepare("INSERT INTO user_program_access(user_id,program_specification_id,access_level) VALUES(?,?,'Owner')")->execute([$this->user,$this->programs[0]]);}
+    protected function tearDown():void{if(!isset($this->pdo))return;$this->pdo->prepare('DELETE FROM user_program_access WHERE user_id=?')->execute([$this->user]);$marks=implode(',',array_fill(0,count($this->programs),'?'));$this->pdo->prepare("DELETE FROM program_specifications WHERE id IN ($marks)")->execute($this->programs);$this->pdo->prepare('DELETE FROM users WHERE id=?')->execute([$this->user]);}
+    #[Group('database')]
+    public function testProgramLeaderOnlySeesGrantedProgram():void{$repo=new ProgramSpecificationRepository($this->pdo);self::assertNotNull($repo->findScoped($this->programs[0],'Program Leader',$this->user));self::assertNull($repo->findScoped($this->programs[1],'Program Leader',$this->user));self::assertNotNull($repo->findScoped($this->programs[1],'Admin',$this->user));}
+    public function testProgramRoleMatrix():void{self::assertTrue(PermissionMatrix::allows('Reviewer','programs','view'));self::assertFalse(PermissionMatrix::allows('Reviewer','programs','create'));self::assertTrue(PermissionMatrix::allows('Program Leader','programs','update'));self::assertFalse(PermissionMatrix::allows('Program Leader','programs','delete'));self::assertTrue(PermissionMatrix::allows('Admin','programs','delete'));}
+}

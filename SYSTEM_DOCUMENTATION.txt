@@ -1,0 +1,42 @@
+QUALITY MANAGEMENT SYSTEM - DOCUMENTATION
+
+1. System Location
+C:\quality_system
+
+2. Database Name
+quality_system
+
+3. Main Login Page
+http://localhost:8000/login.php
+
+4. Main Modules
+- Dashboard
+- Evidence Repository
+- Standards/Substandards
+- Tasks
+- My Tasks
+- Course Reports
+- Semester Reports
+- KPIs
+- Users
+- Settings
+- Activity Logs
+
+5. Backup Folder
+C:\quality_system_backups
+
+6. Start Command
+cd C:\quality_system
+php -S localhost:8000
+
+7. Backup Command
+cd C:\quality_system
+backup_database.bat
+
+8. Important Admin Pages
+/users.php
+/settings.php
+/activity_logs.php
+
+9. Notes
+Do not delete db.php, auth_check.php, role_check.php, nav.php, or log_activity.php.

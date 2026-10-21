@@ -1,0 +1,31 @@
+{
+  "name": "quality-system/application",
+  "description": "Quality management system",
+  "license": "proprietary",
+  "type": "project",
+  "require": {
+    "php": "^8.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "QualitySystem\\": "app/"
+    },
+    "files": [
+      "storage.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "QualitySystem\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "lint": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security_check.ps1",
+    "security": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/dependency_security_check.ps1"
+    ,"http-test": "php scripts/http_e2e.php"
+  }
+}
